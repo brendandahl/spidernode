@@ -209,6 +209,13 @@ void Isolate::AddGCEpilogueCallback(
 void Isolate::RemoveGCEpilogueCallback(GCCallback callback) {
 }
 
+int64_t Isolate::AdjustAmountOfExternalAllocatedMemory(
+    int64_t change_in_bytes) {
+  // TODO: spidermonkey supports increasing allocation count, but that does not
+  // seem to be persistent and behave the way v8's does
+  return 0;
+}
+
 JSRuntime* Isolate::Runtime() const { return pimpl_->rt; }
 
 Value* Isolate::AddPersistent(Value* val) {
