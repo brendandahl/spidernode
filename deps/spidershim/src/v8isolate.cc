@@ -193,6 +193,22 @@ void Isolate::AddStackTrace(StackTrace* trace) {
   pimpl_->stackTraces.push_back(trace);
 }
 
+void Isolate::AddGCPrologueCallback(
+  GCCallback callback, GCType gc_type_filter) {
+  // TODO: used only with dtrace/etw, could be implemented with JS_SetGCCallback
+}
+
+void Isolate::RemoveGCPrologueCallback(GCCallback callback) {
+}
+
+void Isolate::AddGCEpilogueCallback(
+  GCCallback callback, GCType gc_type_filter) {
+  // TODO: used only with dtrace/etw, could be implemented with JS_SetGCCallback
+}
+
+void Isolate::RemoveGCEpilogueCallback(GCCallback callback) {
+}
+
 JSRuntime* Isolate::Runtime() const { return pimpl_->rt; }
 
 Value* Isolate::AddPersistent(Value* val) {
