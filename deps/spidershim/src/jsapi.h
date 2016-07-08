@@ -24,6 +24,8 @@
 #include "v8.h"
 #include "conversions.h"
 
+void JS_DumpException(JSContext* cx, JS::Handle<JS::Value> exc);
+
 // All callsittes calling into SpiderMonkey MUST have a AutoJSAPI on the stack.
 class AutoJSAPI : private JSAutoCompartment {
  public:
@@ -71,7 +73,11 @@ class AutoJSAPI : private JSAutoCompartment {
     if (!ignoreException_ &&
         !v8::Isolate::GetCurrent()->GetTopmostTryCatch() &&
         JS_IsExceptionPending(cx)) {
-      JS_ReportPendingException(cx);
+      // TODO: make this more like the old JS_ReportPendingException(cx);
+      JS::RootedValue exc(cx);
+      JS_GetPendingException(cx, &exc);
+      JS_DumpException(cx, exc);
+      JS_ClearPendingException(cx);
     }
   }
   bool ignoreException_ = false;

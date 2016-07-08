@@ -84,32 +84,34 @@ bool Context::CreateGlobal(JSContext* cx, Isolate* isolate) {
   pimpl_->globalObj.Reset(isolate,
       internal::Local<Object>::New(Isolate::GetCurrent(), globalObj));
 
+  // TODO: renable this
   // Ensure that JS errors appear as exceptions to us.
-  JS::ContextOptionsRef(cx).setAutoJSAPIOwnsErrorReporting(true);
+  // JS::RuntimeOptionsRef(isolate->Runtime()).setAutoJSAPIOwnsErrorReporting(true);
 
 #ifdef JS_GC_ZEAL
-  const char* env = getenv("JS_GC_MAX_ZEAL");
-  if (env && *env) {
-    // Set all of the gc zeal modes for maximum verification!
-    static bool warned = false;
-    if (!warned) {
-      fprintf(stderr,
-              "Warning: enabled max-zeal GC mode, this is super slow!\n");
-      warned = true;
-    }
-    uint32_t frequency = JS_DEFAULT_ZEAL_FREQ;
-    const char* freq = getenv("JS_GC_MAX_ZEAL_FREQ");
-    if (freq && *freq) {
-      errno = 0;
-      uint32_t f = atoi(freq);
-      if (errno == 0) {
-        frequency = f;
-      }
-    }
-    for (uint32_t i = 1; i <= 14; ++i) {
-      JS_SetGCZeal(cx, i, frequency);
-    }
-  }
+  // TODO: renable this
+  // const char* env = getenv("JS_GC_MAX_ZEAL");
+  // if (env && *env) {
+  //   // Set all of the gc zeal modes for maximum verification!
+  //   static bool warned = false;
+  //   if (!warned) {
+  //     fprintf(stderr,
+  //             "Warning: enabled max-zeal GC mode, this is super slow!\n");
+  //     warned = true;
+  //   }
+  //   uint32_t frequency = JS_DEFAULT_ZEAL_FREQ;
+  //   const char* freq = getenv("JS_GC_MAX_ZEAL_FREQ");
+  //   if (freq && *freq) {
+  //     errno = 0;
+  //     uint32_t f = atoi(freq);
+  //     if (errno == 0) {
+  //       frequency = f;
+  //     }
+  //   }
+  //   for (uint32_t i = 1; i <= 14; ++i) {
+  //     JS_SetGCZeal(isolate->Runtime(), i, frequency);
+  //   }
+  // }
 #endif
 
   return true;
@@ -192,8 +194,13 @@ void Context::Impl::RunMicrotasks() {
   for (size_t i = 0; i < jobQueue.length(); i++) {
       job = jobQueue[i];
       JSAutoCompartment ac(cx, job);
-      if (!JS::Call(cx, JS::UndefinedHandleValue, job, args, &rval))
-          JS_ReportPendingException(cx);
+      if (!JS::Call(cx, JS::UndefinedHandleValue, job, args, &rval)) {
+        // TODO: make this more like the old JS_ReportPendingException(cx);
+        JS::RootedValue exc(cx);
+        JS_GetPendingException(cx, &exc);
+        JS_DumpException(cx, exc);
+        JS_ClearPendingException(cx);
+      }
       jobQueue[i].set(nullptr);
   }
   jobQueue.clear();

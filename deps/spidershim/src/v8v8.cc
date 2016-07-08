@@ -26,6 +26,21 @@
 #include "jsapi.h"
 #include "js/Initialization.h"
 
+void JS_DumpException(JSContext* cx, JS::Handle<JS::Value> exc) {
+  JS::RootedObject excObj(cx, &exc.toObject());
+  JSErrorReport* err = JS_ErrorFromException(cx, excObj);
+  printf("!!!!!!!!! Error: ");
+  size_t i = 0;
+  while (true) {
+    if (err->ucmessage[i] == 0) {
+      break;
+    }
+    printf("%c", err->ucmessage[i]);
+    i++;
+  }
+  printf(" at (%s:%u:%u)\n", err->filename, err->lineno, err->column);
+}
+
 namespace v8 {
 
 namespace internal {
@@ -35,7 +50,7 @@ bool gDisposed = false;
 bool V8::Initialize() {
   assert(!internal::gDisposed);
   return v8::internal::InitializeIsolate() &&
-         v8::internal::InitializeHandleScope() && JS_Init();
+         v8::internal::InitializeHandleScope()/* && JS_Init()*/;
 }
 
 bool V8::Dispose() {

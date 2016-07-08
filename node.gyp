@@ -14,7 +14,7 @@
     'node_shared_openssl%': 'false',
     'node_v8_options%': '',
     'node_enable_v8_vtunejit%': 'false',
-    'node_target_type%': 'executable',
+    'node_target_type%': 'static_library',
     'node_engine%': 'v8',
     'node_core_target_name%': 'node',
     'library_files': [

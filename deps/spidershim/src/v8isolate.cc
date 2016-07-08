@@ -99,13 +99,14 @@ Isolate::Isolate() : pimpl_(new Impl()) {
                                        512 * 1024 * 1024;  // 512MB
   pimpl_->rt = JS_NewRuntime(defaultHeapSize, JS::DefaultNurseryBytes, nullptr);
   if (pimpl_->rt) {
-    pimpl_->cx = JS_NewContext(pimpl_->rt, 32 * 1024);
+    pimpl_->cx = JS_GetContext(pimpl_->rt);
   }
   // Assert success for now!
   if (!pimpl_->rt || !pimpl_->cx) {
     MOZ_CRASH("Creating the JS Runtime failed!");
   }
-  JS_SetErrorReporter(pimpl_->rt, Impl::ErrorReporter);
+  // TODO figure out how new error handling works
+  JS::SetWarningReporter(pimpl_->rt, Impl::ErrorReporter);
   const size_t defaultStackQuota = 128 * sizeof(size_t) * 1024;
   JS_SetGCParameter(pimpl_->rt, JSGC_MODE, JSGC_MODE_INCREMENTAL);
   JS_SetGCParameter(pimpl_->rt, JSGC_MAX_BYTES, 0xffffffff);
@@ -128,10 +129,22 @@ Isolate::Isolate() : pimpl_(new Impl()) {
   pimpl_->EnsureEternals(this);
 }
 
+Isolate::Isolate(void* rt_) : pimpl_(new Impl()) {
+  auto rt = (JSRuntime*)rt_;
+  pimpl_->rt = rt;
+  pimpl_->cx = JS_GetContext(rt);
+  pimpl_->EnsurePersistents(this);
+  pimpl_->EnsureEternals(this);
+  if (!pimpl_->rt || !pimpl_->cx) {
+    MOZ_CRASH("Creating the JS Runtime failed!");
+  }
+}
+
 Isolate::~Isolate() {
   assert(pimpl_->rt);
   JS_SetInterruptCallback(pimpl_->rt, NULL);
-  JS_DestroyContext(pimpl_->cx);
+  //TODO SEE IF THIS IS HANDLED BY DESTROY RUNTIME NOW
+  // JS_DestroyContext(pimpl_->cx);
   JS_DestroyRuntime(pimpl_->rt);
   delete pimpl_;
 }
@@ -142,6 +155,10 @@ Isolate* Isolate::New(const CreateParams& params) {
     V8::SetArrayBufferAllocator(params.array_buffer_allocator);
   }
   return isolate;
+}
+
+Isolate* Isolate::New(void* jsRuntime) {
+  return new Isolate(jsRuntime);
 }
 
 Isolate* Isolate::New() { return new Isolate(); }

@@ -2453,6 +2453,7 @@ class V8_EXPORT Isolate {
   };
 
   static Isolate* New(const CreateParams& params);
+  static Isolate* New(void* jsRuntime);
   static Isolate* New();
   static Isolate* GetCurrent();
   typedef bool(*AbortOnUncaughtExceptionCallback)(Isolate*);
@@ -2518,6 +2519,7 @@ class V8_EXPORT Isolate {
 
 private:
   Isolate();
+  Isolate(void*);
 
   void AddContext(Context* context);
   void PushCurrentContext(Context* context);
