@@ -712,51 +712,51 @@
         } ],
       ]
     },
-    {
-      'target_name': 'cctest',
-      'type': 'executable',
-      'dependencies': [
-        'deps/gtest/gtest.gyp:gtest',
-      ],
-      'include_dirs': [
-        'src',
-      ],
-      'conditions': [
-        [ 'node_engine=="v8"', {
-          'include_dirs': [
-            'deps/v8/include'
-          ],
-          'dependencies': [
-            'deps/v8/tools/gyp/v8.gyp:v8',
-            'deps/v8/tools/gyp/v8.gyp:v8_libplatform'
-          ],
-        }],
-        ['node_engine=="chakracore"', {
-          'dependencies': [ 'deps/chakrashim/chakrashim.gyp:chakrashim' ],
-        }],
-        ['node_engine=="spidermonkey"', {
-          'dependencies': [ 'deps/spidershim/spidershim.gyp:spidershim' ],
-        }],
-      ],
-      'msvs_settings': {
-        'VCLinkerTool': {
-          'SubSystem': 1, # /subsystem:console
-        },
-      },
-      'defines': [
-        # gtest's ASSERT macros conflict with our own.
-        'GTEST_DONT_DEFINE_ASSERT_EQ=1',
-        'GTEST_DONT_DEFINE_ASSERT_GE=1',
-        'GTEST_DONT_DEFINE_ASSERT_GT=1',
-        'GTEST_DONT_DEFINE_ASSERT_LE=1',
-        'GTEST_DONT_DEFINE_ASSERT_LT=1',
-        'GTEST_DONT_DEFINE_ASSERT_NE=1',
-        'NODE_WANT_INTERNALS=1',
-      ],
-      'sources': [
-        'test/cctest/util.cc',
-      ],
-    }
+    # {
+    #   'target_name': 'cctest',
+    #   'type': 'executable',
+    #   'dependencies': [
+    #     'deps/gtest/gtest.gyp:gtest',
+    #   ],
+    #   'include_dirs': [
+    #     'src',
+    #   ],
+    #   'conditions': [
+    #     [ 'node_engine=="v8"', {
+    #       'include_dirs': [
+    #         'deps/v8/include'
+    #       ],
+    #       'dependencies': [
+    #         'deps/v8/tools/gyp/v8.gyp:v8',
+    #         'deps/v8/tools/gyp/v8.gyp:v8_libplatform'
+    #       ],
+    #     }],
+    #     ['node_engine=="chakracore"', {
+    #       'dependencies': [ 'deps/chakrashim/chakrashim.gyp:chakrashim' ],
+    #     }],
+    #     ['node_engine=="spidermonkey"', {
+    #       'dependencies': [ 'deps/spidershim/spidershim.gyp:spidershim' ],
+    #     }],
+    #   ],
+    #   'msvs_settings': {
+    #     'VCLinkerTool': {
+    #       'SubSystem': 1, # /subsystem:console
+    #     },
+    #   },
+    #   'defines': [
+    #     # gtest's ASSERT macros conflict with our own.
+    #     'GTEST_DONT_DEFINE_ASSERT_EQ=1',
+    #     'GTEST_DONT_DEFINE_ASSERT_GE=1',
+    #     'GTEST_DONT_DEFINE_ASSERT_GT=1',
+    #     'GTEST_DONT_DEFINE_ASSERT_LE=1',
+    #     'GTEST_DONT_DEFINE_ASSERT_LT=1',
+    #     'GTEST_DONT_DEFINE_ASSERT_NE=1',
+    #     'NODE_WANT_INTERNALS=1',
+    #   ],
+    #   'sources': [
+    #     'test/cctest/util.cc',
+    #   ],
+    # }
   ], # end targets
 
   'conditions': [
