@@ -39,6 +39,12 @@ class Local {
   static v8::Local<T> NewTemplate(Isolate* isolate, JS::Value val) {
     return v8::Local<T>::New(isolate, GetV8Template(&val));
   }
+  static v8::Local<T> NewSignature(Isolate* isolate, JS::Value val) {
+    return v8::Local<T>::New(isolate, GetV8Signature(&val));
+  }
+  static v8::Local<T> NewAccessorSignature(Isolate* isolate, JS::Value val) {
+    return v8::Local<T>::New(isolate, GetV8AccessorSignature(&val));
+  }
 };
 }
 }

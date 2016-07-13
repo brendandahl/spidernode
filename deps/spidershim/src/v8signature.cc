@@ -18,27 +18,32 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+#include <assert.h>
+
 #include "v8.h"
-#include "v8-debug.h"
+#include "jsapi.h"
+#include "conversions.h"
+#include "v8local.h"
 
 namespace v8 {
 
-MaybeLocal<Value> Object::GetRealNamedProperty(v8::Local<v8::Context>, v8::Local<v8::Name>) {
-  fprintf(stderr, "Object::GetRealNamedProperty is a stub\n");
-  return MaybeLocal<Value>();
+Local<Signature> Signature::New(Isolate* isolate,
+                                Local<FunctionTemplate> receiver) {
+  JS::Value signatureVal;
+  signatureVal.setUndefined();
+  if (!receiver.IsEmpty()) {
+    signatureVal = *GetValue(receiver);
+  }
+  return internal::Local<Signature>::NewSignature(isolate, signatureVal);
 }
 
-Maybe<PropertyAttribute> Object::GetRealNamedPropertyAttributes(v8::Local<v8::Context>, v8::Local<v8::Name>) {
-  fprintf(stderr, "Object::GetRealNamedPropertyAttributes is a stub\n");
-  return Nothing<PropertyAttribute>();
+Local<AccessorSignature> AccessorSignature::New(Isolate* isolate,
+                                                Local<FunctionTemplate> receiver) {
+  JS::Value signatureVal;
+  signatureVal.setUndefined();
+  if (!receiver.IsEmpty()) {
+    signatureVal = *GetValue(receiver);
+  }
+  return internal::Local<AccessorSignature>::NewAccessorSignature(isolate, signatureVal);
 }
-
-void ObjectTemplate::SetHandler(v8::NamedPropertyHandlerConfiguration const&) {
-  fprintf(stderr, "ObjectTemplate::SetHandler is a stub\n");
 }
-
-void ObjectTemplate::SetNamedPropertyHandler(void (*)(v8::Local<v8::String>, v8::PropertyCallbackInfo<v8::Value> const&), void (*)(v8::Local<v8::String>, v8::Local<v8::Value>, v8::PropertyCallbackInfo<v8::Value> const&), void (*)(v8::Local<v8::String>, v8::PropertyCallbackInfo<v8::Integer> const&), void (*)(v8::Local<v8::String>, v8::PropertyCallbackInfo<v8::Boolean> const&), void (*)(v8::PropertyCallbackInfo<v8::Array> const&), v8::Local<v8::Value>) {
-  fprintf(stderr, "ObjectTemplate::SetNamedPropertyHandler is a stub\n");
-}
-
-} // namespace v8
