@@ -145,7 +145,7 @@ Isolate::~Isolate() {
   JS_SetInterruptCallback(pimpl_->rt, NULL);
   //TODO SEE IF THIS IS HANDLED BY DESTROY RUNTIME NOW
   // JS_DestroyContext(pimpl_->cx);
-  JS_DestroyRuntime(pimpl_->rt);
+  // JS_DestroyRuntime(pimpl_->rt);
   delete pimpl_;
 }
 
