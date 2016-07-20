@@ -50,29 +50,30 @@ Local<Context> Context::New(Isolate* isolate,
 }
 
 bool Context::CreateGlobal(JSContext* cx, Isolate* isolate) {
-  static const JSClassOps cOps = {
-      nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
-      nullptr, nullptr, nullptr, nullptr, nullptr, JS_GlobalObjectTraceHook};
-  static const JSClass globalClass = {
-    "global",
-    JSCLASS_GLOBAL_FLAGS |
-      JSCLASS_HAS_RESERVED_SLOTS(uint32_t(GlobalSlots::NumSlots)),
-    &cOps};
+  // static const JSClassOps cOps = {
+  //     nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+  //     nullptr, nullptr, nullptr, nullptr, nullptr, JS_GlobalObjectTraceHook};
+  // static const JSClass globalClass = {
+  //   "global",
+  //   JSCLASS_GLOBAL_FLAGS |
+  //     JSCLASS_HAS_RESERVED_SLOTS(uint32_t(GlobalSlots::NumSlots)),
+  //   &cOps};
 
-  JS::RootedObject newGlobal(cx);
-  JS::CompartmentOptions options;
-  options.behaviors().setVersion(JSVERSION_LATEST);
-  newGlobal = JS_NewGlobalObject(cx, &globalClass, nullptr,
-                                 JS::FireOnNewGlobalHook, options);
+  // JS::RootedObject newGlobal(cx);
+  // JS::CompartmentOptions options;
+  // options.behaviors().setVersion(JSVERSION_LATEST);
+  // newGlobal = JS_NewGlobalObject(cx, &globalClass, nullptr,
+  //                                JS::FireOnNewGlobalHook, options);
+  JS::Rooted<JSObject*> newGlobal(cx, JS::CurrentGlobalOrNull(cx));
   if (!newGlobal) {
     return false;
   }
 
   AutoJSAPI jsAPI(cx, newGlobal);
 
-  if (!JS_InitStandardClasses(cx, newGlobal)) {
-    return false;
-  }
+  // if (!JS_InitStandardClasses(cx, newGlobal)) {
+  //   return false;
+  // }
   js::SetReservedSlot(newGlobal, uint32_t(GlobalSlots::ContextSlot),
                       JS::PrivateValue(this));
 
